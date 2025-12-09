@@ -196,7 +196,11 @@ CREATE TABLE t_factura(
     id_usuario       int(11),
     id_producto      int(11),
     cantidad         int(11),
+<<<<<<< HEAD
     valor_unitario DECIMAL(10,2),
+=======
+    valor_unitario   float(10,2),
+>>>>>>> d3df2ead6cf0a4b518d99187c1bea1d198710e85
     CONSTRAINT       pk_factura   PRIMARY KEY(id_factura),
     CONSTRAINT       fk_cliente   FOREIGN KEY(id_cliente)   REFERENCES t_cliente(id_cliente),
     CONSTRAINT       fk_producto  FOREIGN KEY(id_producto)  REFERENCES t_producto(id_producto),
