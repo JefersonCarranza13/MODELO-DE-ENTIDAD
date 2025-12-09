@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHOPPING SIENA - Tienda de Ropa Online</title>
+
+<style>
+/* ==========================
+   ESTILOS GENERALES
+========================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #46c2f3 0%, #bb56da 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ==========================
+   HEADER
+========================== */
+header {
+    background: white;
+    padding: 20px 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 32px;
+    font-weight: bold;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.cart-btn {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: .3s;
+    position: relative;
+}
+
+.cart-btn:hover {
+    background: #764ba2;
+    transform: translateY(-2px);
+}
+
+.cart-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #ff4757;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* ==========================
+   PRODUCTOS
+========================== */
+.productos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.producto-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transition: .3s;
+    cursor: pointer;
+}
+
+.producto-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+}
+
+.producto-imagen {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.producto-info {
+    padding: 20px;
+}
+
+.producto-precio {
+    font-size: 24px;
+    color: #667eea;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.rating {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.star {
+    color: #ffd700;
+    font-size: 18px;
+}
+.star.empty {
+    color: #ddd;
+}
+
+.btn-agregar {
+    width: 100%;
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: .3s;
+}
+
+.btn-agregar:hover {
+    background: #764ba2;
+}
+
+/* ==========================
+   MODALES
+========================== */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-contenido {
+    background: white;
+    border-radius: 15px;
+    max-width: 900px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 30px;
+    cursor: pointer;
+    color: #666;
+}
+
+/* ==========================
+   DETALLE PRODUCTO
+========================== */
+.detalle-producto {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    padding: 30px;
+}
+
+.detalle-imagen {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.tallas {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+}
+.talla-btn {
+    padding: 12px 18px;
+    border: 2px solid #ddd;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.talla-btn.selected {
+    background: #667eea;
+    border-color: #667eea;
+    color: white;
+}
+
+/* ==========================
+   RESEÑAS
+========================== */
+.resenas-seccion {
+    padding: 30px;
+    border-top: 2px solid #eee;
+}
+.btn-resena {
+    background: #667eea;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.form-resena {
+    display: none;
+    margin-top: 20px;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+}
+.form-resena.active {
+    display: block;
+}
+
+.rating-input span {
+    font-size: 28px;
+    cursor: pointer;
+    color: #ccc;
+}
+.rating-input span.active {
+    color: #ffd700;
+}
+
+/* ==========================
+   CARRITO
+========================== */
+.carrito-item {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+.carrito-item img {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+.cantidad-control {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+.cantidad-btn {
+    background: #667eea;
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.btn-eliminar {
+    background: #ff4757;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    height: 40px;
+}
+
+.carrito-total {
+    padding: 20px;
+    text-align: right;
+    font-size: 24px;
+    color: #667eea;
+    font-weight: bold;
+}
+
+/* ==========================
+   RESPONSIVE
+========================== */
+@media(max-width: 768px) {
+    .detalle-producto {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+    <!-- HEADER -->
+    <header>
+        <div class="logo">👗 SHOPPING SIENA</div>
+        <button class="cart-btn">
+            🛒 Carrito
+            <span id="cartCount" class="cart-count">0</span>
+        </button>
+    </header>
+
+    <!-- PRODUCTOS -->
+    <div id="productosGrid" class="productos-grid"></div>
+
+</div>
+
+<!-- MODAL DETALLE -->
+<div id="modalDetalle" class="modal">
+    <div class="modal-contenido">
+        <div class="modal-header">
+            <h2>Detalle del Producto</h2>
+            <button class="close-btn" onclick="cerrarModal('modalDetalle')">&times;</button>
+        </div>
+        <div id="detalleContenido"></div>
+    </div>
+</div>
+
+<!-- MODAL CARRITO -->
+<div id="modalCarrito" class="modal">
+    <div class="modal-contenido">
+        <div class="modal-header">
+            <h2>Mi Carrito</h2>
+            <button class="close-btn" onclick="cerrarModal('modalCarrito')">&times;</button>
+        </div>
+        <div id="carritoContenido"></div>
+    </div>
+</div>
+
+
+<script>
+const productos = [
+    {
+        id: 1,
+        nombre: "Camiseta Básica",
+        precio: 45000,
+        imagen: "https://racketball.vtexassets.com/arquivos/ids/249342/Camiseta-Crop-Oversize--Color-Blanco-Para-Mujer.jpg?v=638871764559570000",
+        descripcion: "Camiseta de algodón 100% suave y cómoda, perfecta para el día a día.",
+        tallas: ["S", "M", "L", "XL"],
+        resenas: [
+            {autor: "María García", calificacion: 5, texto: "Excelente calidad, muy cómoda", fecha: "2024-11-15"},
+            {autor: "Juan Pérez", calificacion: 4, texto: "Buena tela, aunque la talla es un poco grande", fecha: "2024-11-10"}
+        ]
+    },
+    {
+        id: 2,
+        nombre: "Jean Slim Fit",
+        precio: 120000,
+        imagen: "https://images.unsplash.com/photo-1542272604-787c3835535d?w=400",
+        descripcion: "Jean ajustado de mezclilla premium con corte moderno.",
+        tallas: ["28", "30", "32", "34"],
+        resenas: [
+            {autor: "Carlos Ruiz", calificacion: 5, texto: "Ajuste perfecto y muy resistente", fecha: "2024-11-20"}
+        ]
+    },
+    {
+        id: 3,
+        nombre: "Vestido Floral",
+        precio: 95000,
+        imagen: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400",
+        descripcion: "Vestido ligero con estampado floral, ideal para verano.",
+        tallas: ["S", "M", "L"],
+        resenas: []
+    },
+    {
+        id: 4,
+        nombre: "Chaqueta Denim",
+        precio: 150000,
+        imagen: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400",
+        descripcion: "Chaqueta de mezclilla clásica y resistente.",
+        tallas: ["S", "M", "L", "XL"],
+        resenas: [
+            {autor: "Ana Martínez", calificacion: 5, texto: "Me encanta! Muy versátil", fecha: "2024-11-18"},
+            {autor: "Pedro López", calificacion: 4, texto: "Buena calidad pero un poco pesada", fecha: "2024-11-12"}
+        ]
+    },
+    {
+        id: 5,
+        nombre: "Blusa Elegante",
+        precio: 65000,
+        imagen: "https://studiofco.vtexassets.com/arquivos/ids/1597018/-stfco-producto-Camisasyblusas-BLANCO-S174934A-1.jpg?v=638598512933300000",
+        descripcion: "Blusa perfecta para la oficina o eventos formales.",
+        tallas: ["S", "M", "L"],
+        resenas: []
+    },
+    {
+        id: 6,
+        nombre: "Gaban Elegante",
+        precio: 158000,
+        imagen: "https://sykwear.com/wp-content/uploads/2024/05/gaban-crema-frente.jpg",
+        descripcion: "Gaban elegante para cualquier ocasión.",
+        tallas: ["S", "M", "L", "XL"],
+        resenas: [
+            {autor: "Luisa Gómez", calificacion: 5, texto: "Super cómodo y práctico", fecha: "2024-11-22"}
+        ]
+    },
+
+    /* ============================
+     * NUEVOS PRODUCTOS AÑADIDOS
+     * ============================ */
+
+    /* 🔹 Vestidos */
+    {
+        id: 7,
+        nombre: "Vestido Rojo de Fiesta",
+        precio: 135000,
+        imagen: "https://ae01.alicdn.com/kf/Scf396ba2541e41ddb73cba76331ca97f7.jpg",
+        descripcion: "Vestido elegante de corte largo con tela satinada ideal para eventos.",
+        tallas: ["S", "M", "L"],
+        resenas: [
+            {autor: "Eliana Torres", calificacion: 5, texto: "Hermoso, queda perfecto!", fecha: "2025-01-02"}
+        ]
+    },
+    {
+        id: 8,
+        nombre: "Vestido Casual Beige",
+        precio: 82000,
+        imagen: "https://dqp736wsu6w3m.cloudfront.net/s3bucket/w1000/looks/2629/minimalist-cream-sheath-dress-with-sculpted-fit-for-chic-workdays.jpeg",
+        descripcion: "Vestido suave y cómodo con estilo casual para uso diario.",
+        tallas: ["S", "M", "L", "XL"],
+        resenas: []
+    },
+    {
+        id: 9,
+        nombre: "Vestido Negro Elegante",
+        precio: 110000,
+        imagen: "https://lalapita.com/wp-content/uploads/2025/10/1005-vestido-gala-negro-abertura-bandeja-mujer-elegante-de-gala.webp",
+        descripcion: "Clásico vestido negro ideal para ocasiones especiales.",
+        tallas: ["S", "M", "L"],
+        resenas: [
+            {autor: "Karol P.", calificacion: 4, texto: "Me encantó, material suave.", fecha: "2025-01-05"}
+        ]
+    },
+
+    /* 🔹 Chaquetas */
+    {
+        id: 10,
+        nombre: "Chaqueta de Cuero Sintético",
+        precio: 180000,
+        imagen: "https://genomacol.com/cdn/shop/files/IMG-599.jpg?v=1743399349",
+        descripcion: "Chaqueta estilo motociclista hecha con cuero sintético premium.",
+        tallas: ["S", "M", "L", "XL"],
+        resenas: []
+    },
+    {
+        id: 11,
+        nombre: "Chaqueta Acolchada Rosada",
+        precio: 165000,
+        imagen: "https://tommy-europe.scene7.com/is/image/TommyEurope/DW0DW20390_TPF_main?$b2c_updp_m_mainImage_1920$",
+        descripcion: "Chaqueta abrigada tipo puff ideal para clima frío.",
+        tallas: ["S", "M", "L"],
+        resenas: [
+            {autor: "Diana Ruiz", calificacion: 5, texto: "Muy calientica!", fecha: "2025-01-08"}
+        ]
+    },
+    {
+        id: 12,
+        nombre: "Chaqueta Formal Blanca",
+        precio: 140000,
+        imagen: "https://velvetshowroom.com/wp-content/uploads/2020/01/C9DC2A66-34E7-40B0-9669-CD0C457AB2E5.jpeg",
+        descripcion: "Chaqueta elegante perfecta para oficina o reuniones.",
+        tallas: ["S", "M", "L"],
+        resenas: []
+    },
+
+    /* 🔹 Accesorios */
+    {
+        id: 13,
+        nombre: "Bolso de Mano Beige",
+        precio: 72000,
+        imagen: "https://static.dafiti.com.co/p/calvin-klein-4866-1883732-2-zoom.jpg",
+        descripcion: "Bolso elegante con diseño minimalista, ideal para combinar.",
+        tallas: ["Única"],
+        resenas: []
+    },
+    {
+        id: 14,
+        nombre: "Gafas de Sol Clásicas",
+        precio: 45000,
+        imagen: "https://ae-pic-a1.aliexpress-media.com/kf/Sa4e082350df84eb38d2af04ff7f8c63dS.jpg",
+        descripcion: "Gafas oscuras con diseño elegante y liviano.",
+        tallas: ["Única"],
+        resenas: []
+    },
+    {
+        id: 15,
+        nombre: "Collar Doble Dorado",
+        precio: 38000,
+        imagen: "https://gemartmty.com/cdn/shop/products/IMG_6429_f6cca9a0-39e3-4bf3-a039-b44e3c6b6601.jpg?v=1667428895&width=1445",
+        descripcion: "Accesorio dorado perfecto para outfits elegantes.",
+        tallas: ["Única"],
+        resenas: []
+    },
+
+    /* 🔹 Jeans */
+    {
+        id: 16,
+        nombre: "Jean Mom Fit",
+        precio: 115000,
+        imagen: "https://51rdenimstore.com/wp-content/uploads/2024/07/Jean-Mom-Fit-Dama-color-Hielo-JM-101-1.jpg",
+        descripcion: "Jean estilo mom fit con diseño vintage moderno.",
+        tallas: ["28", "30", "32", "34"],
+        resenas: []
+    },
+    {
+        id: 17,
+        nombre: "Jean Wide Leg Azul",
+        precio: 128000,
+        imagen: "https://oxap.com.co/cdn/shop/files/110950_fb593ce42a4fa17284d5b3f68c9e92f4.jpg?v=1761927784",
+        descripcion: "Jean ancho de tiro alto, muy cómodo y moderno.",
+        tallas: ["28", "30", "32", "34"],
+        resenas: []
+    },
+    {
+        id: 18,
+        nombre: "Jean Negro Skinny",
+        precio: 105000,
+        imagen: "https://xlivejeans.com/wp-content/uploads/2023/06/Sin-titulo-1_0001_IKUL_KAOLY2582.jpg",
+        descripcion: "Jean negro clásico elasticado y muy cómodo.",
+        tallas: ["26", "28", "30", "32"],
+        resenas: []
+    }
+];
+
+
+let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+let productoActual = null;
+let tallaSeleccionada = null;
+let calificacionSeleccionada = 0;
+
+/* ======================================
+   2. Render Productos
+====================================== */
+function renderizarProductos() {
+    const grid = document.getElementById("productosGrid");
+
+    grid.innerHTML = productos.map(p => `
+        <div class="producto-card" data-id="${p.id}">
+            <img src="${p.imagen}" class="producto-imagen">
+            <div class="producto-info">
+                <h3>${p.nombre}</h3>
+                <div class="rating">${generarEstrellas(calcularPromedio(p.resenas))}</div>
+                <p class="producto-precio">$${p.precio.toLocaleString("es-CO")}</p>
+                <button class="btn-agregar ver-detalle" data-id="${p.id}">Ver Detalles</button>
+            </div>
+        </div>
+    `).join("");
+}
+
+function calcularPromedio(resenas) {
+    if (!resenas.length) return 0;
+    return resenas.reduce((acc, r) => acc + r.calificacion, 0) / resenas.length;
+}
+function generarEstrellas(calif) {
+    return Array.from({length:5})
+        .map((_,i)=>`<span class="star ${i+1<=calif?'':'empty'}">★</span>`)
+        .join("");
+}
+
+/* ======================================
+   3. Detalle Producto
+====================================== */
+function abrirDetalle(id) {
+    tallaSeleccionada = null;
+    productoActual = productos.find(p=>p.id==id);
+
+    const cont = document.getElementById("detalleContenido");
+    const p = productoActual;
+
+    cont.innerHTML = `
+        <div class="detalle-producto">
+            <img src="${p.imagen}" class="detalle-imagen">
+
+            <div>
+                <h2>${p.nombre}</h2>
+
+                <div class="rating">
+                    ${generarEstrellas(calcularPromedio(p.resenas))}
+                    <span>(${p.resenas.length})</span>
+                </div>
+
+                <p class="producto-precio">$${p.precio.toLocaleString("es-CO")}</p>
+                <p>${p.descripcion}</p>
+
+                <h3>Selecciona tu talla:</h3>
+                <div id="tallasContainer" class="tallas">
+                    ${p.tallas.map(t=>`
+                        <button class="talla-btn" data-talla="${t}">${t}</button>
+                    `).join("")}
+                </div>
+
+                <button id="btnAgregarCarrito" class="btn-agregar">
+                    Agregar al Carrito
+                </button>
+            </div>
+        </div>
+
+        ${renderResenas()}
+    `;
+
+    agregarEventosDetalle();
+    document.getElementById("modalDetalle").classList.add("active");
+}
+
+function agregarEventosDetalle() {
+    document.querySelectorAll(".talla-btn").forEach(btn=>{
+        btn.addEventListener("click", e=>{
+            document.querySelectorAll(".talla-btn").forEach(b=>b.classList.remove("selected"));
+            e.target.classList.add("selected");
+            tallaSeleccionada = e.target.dataset.talla;
+        });
+    });
+
+    document.getElementById("btnAgregarCarrito")
+        .addEventListener("click", agregarAlCarritoDesdeDetalle);
+
+    document.getElementById("btnMostrarForm")
+        ?.addEventListener("click", toggleFormResena);
+
+    document.getElementById("btnEnviarResena")
+        ?.addEventListener("click", enviarResena);
+
+    document.querySelectorAll("#ratingInput span").forEach((star,i)=>{
+        star.addEventListener("click",()=>setRating(i+1));
+    });
+}
+
+/* ======================================
+   4. Reseñas
+====================================== */
+function renderResenas() {
+    const p = productoActual;
+    return `
+        <div class="resenas-seccion">
+            <div class="resenas-header">
+                <h3>Reseñas de Clientes</h3>
+                <button class="btn-resena" id="btnMostrarForm">✍️ Escribir Reseña</button>
+            </div>
+
+            <div id="formResena" class="form-resena">
+                <input id="nombreResena" placeholder="Tu nombre">
+                <div id="ratingInput" class="rating-input">${"<span>★</span>".repeat(5)}</div>
+                <textarea id="textoResena" placeholder="Escribe tu opinión..."></textarea>
+                <button id="btnEnviarResena" class="btn-enviar">Enviar</button>
+            </div>
+
+            <div id="resenasLista">
+                ${p.resenas.length===0 
+                    ? `<p style="text-align:center;color:#777">No hay reseñas aún</p>`
+                    : p.resenas.map(r=>`
+                        <div class="resena-card">
+                            <div class="resena-header">
+                                <strong>${r.autor}</strong>
+                                <span>${r.fecha}</span>
+                            </div>
+                            <div class="rating">${generarEstrellas(r.calificacion)}</div>
+                            <p>${r.texto}</p>
+                        </div>
+                    `).join("")
+                }
+            </div>
+        </div>
+    `;
+}
+
+function toggleFormResena() {
+    document.getElementById("formResena").classList.toggle("active");
+}
+function setRating(r) {
+    calificacionSeleccionada = r;
+    document.querySelectorAll("#ratingInput span").forEach((star,i)=>{
+        star.classList.toggle("active", i<r);
+    });
+}
+function enviarResena() {
+    const nombre = document.getElementById("nombreResena").value.trim();
+    const texto = document.getElementById("textoResena").value.trim();
+
+    if(!nombre || !texto || calificacionSeleccionada===0)
+        return alert("Completa todos los campos.");
+
+    productoActual.resenas.push({
+        autor:nombre,
+        texto:texto,
+        calificacion:calificacionSeleccionada,
+        fecha:new Date().toISOString().split("T")[0]
+    });
+
+    abrirDetalle(productoActual.id);
+    alert("¡Gracias por tu reseña!");
+}
+
+/* ======================================
+   5. Carrito
+====================================== */
+function guardarCarrito() {
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+}
+
+function agregarAlCarritoDesdeDetalle() {
+    if (!tallaSeleccionada) return alert("Selecciona una talla");
+
+    let item = carrito.find(i=>i.id===productoActual.id && i.talla===tallaSeleccionada);
+    if(item) item.cantidad++;
+    else carrito.push({...productoActual, talla:tallaSeleccionada, cantidad:1});
+
+    guardarCarrito();
+    actualizarContadorCarrito();
+    alert("Agregado al carrito");
+}
+
+function actualizarContadorCarrito() {
+    const total = carrito.reduce((s,i)=>s+i.cantidad,0);
+    document.getElementById("cartCount").textContent = total;
+}
+
+function abrirCarrito() {
+    const modal = document.getElementById("modalCarrito");
+    const cont = document.getElementById("carritoContenido");
+
+    if(carrito.length===0) {
+        cont.innerHTML = `<p style="text-align:center;padding:40px;color:#999">Tu carrito está vacío</p>`;
+    } else {
+        const total = carrito.reduce((s,i)=>s+(i.precio*i.cantidad),0);
+
+        cont.innerHTML = carrito.map((item,i)=>`
+            <div class="carrito-item">
+                <img src="${item.imagen}">
+                <div class="carrito-item-info">
+                    <h4>${item.nombre}</h4>
+                    <p>Talla: ${item.talla}</p>
+                    <p style="color:#667eea;font-weight:bold">$${item.precio.toLocaleString("es-CO")}</p>
+
+                    <div class="cantidad-control">
+                        <button class="cantidad-btn" data-i="${i}" data-op="-1">-</button>
+                        <span>${item.cantidad}</span>
+                        <button class="cantidad-btn" data-i="${i}" data-op="1">+</button>
+                    </div>
+                </div>
+
+                <button class="btn-eliminar" data-del="${i}">🗑️</button>
+            </div>
+        `).join("") + `
+            <div class="carrito-total">
+                Total: $${total.toLocaleString("es-CO")}
+            </div>
+            <div style="text-align:center;padding:20px">
+                <button class="btn-agregar" id="btnContinuar">Continuar Compra</button>
+            </div>
+        `;
+    }
+
+    modal.classList.add("active");
+    agregarEventosCarrito();
+}
+
+function agregarEventosCarrito() {
+    document.querySelectorAll("[data-op]").forEach(btn=>{
+        btn.addEventListener("click", e=>{
+            let i = btn.dataset.i;
+            let op = Number(btn.dataset.op);
+
+            carrito[i].cantidad += op;
+            if(carrito[i].cantidad<=0) carrito.splice(i,1);
+
+            guardarCarrito();
+            actualizarContadorCarrito();
+            abrirCarrito();
+        });
+    });
+
+    document.querySelectorAll("[data-del]").forEach(btn=>{
+        btn.addEventListener("click",()=>{
+            carrito.splice(btn.dataset.del,1);
+            guardarCarrito();
+            actualizarContadorCarrito();
+            abrirCarrito();
+        });
+    });
+
+    document.getElementById("btnContinuar")?.addEventListener("click",()=>{
+        alert("Aquí iría la página de pago.");
+    });
+}
+
+/* ======================================
+   6. Modales
+====================================== */
+function cerrarModal(id) {
+    document.getElementById(id).classList.remove("active");
+}
+
+window.addEventListener("click", e=>{
+    if(e.target.classList.contains("modal")) {
+        e.target.classList.remove("active");
+    }
+});
+
+/* ======================================
+   7. Listeners Globales
+====================================== */
+document.addEventListener("click", e=>{
+    if(e.target.classList.contains("ver-detalle") || e.target.classList.contains("producto-card")) {
+        abrirDetalle(e.target.dataset.id || e.target.closest(".producto-card").dataset.id);
+    }
+});
+
+document.querySelector(".cart-btn").addEventListener("click", abrirCarrito);
+
+/* ======================================
+   8. Inicialización
+====================================== */
+renderizarProductos();
+actualizarContadorCarrito();
+
+</script>
+
+</body>
+</html>
